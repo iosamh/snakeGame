@@ -1,0 +1,125 @@
+#include <iostream>
+#include <cassert>
+using namespace std;
+
+class member{
+	protected:
+		int x;
+		int y;
+	public:
+		member(){
+			x=0;
+			y=0;
+		}
+		member(int x,int y){
+			this->x=x;
+			this->y=y;
+		}
+		void setX(int x){
+			this->x=x;
+		}
+		void setY(int y){
+			this->y=y;
+		}
+		void display(){
+			cout<<"("<<x<<","<<y<<")"<<endl;
+		}
+		int retX(){
+			return x;
+		}
+		int retY(){
+			return y;
+		}
+		bool operator==(member &m){
+			if(x==m.retX()&&y==m.retY()){
+				return true;
+			}else{
+				return false;
+			}
+		}
+};
+
+class queue{
+	protected:
+		int capacity;
+		int head;
+		member content[];
+	public:
+		queue(){
+			capacity=10;
+			content[capacity+1];
+		}
+		queue(int c){
+			if(c>0){
+				this->capacity=c;
+				content[capacity+1];
+			}else{
+				cout<<"Error! negative number!"<<endl;
+			}
+		}
+		bool empty(){
+			if(head<1) return true;
+			else false;
+		}
+		bool full(){
+			if(capacity<=head) return true;
+			else false;
+		}
+		void operator+=(member &m){
+			if(capacity>head){
+				content[head].setX(m.retX());
+				content[head].setY(m.retY());
+				head++;
+			}else{
+				cout<<"can't add because it's full!"<<endl;
+			}
+		}
+		void deleteQ(member &m){	
+				//this is what pdf said!?  void deleteQ(){
+				//	assert(capacity>head);
+				//	head--;			}
+			int g=head+1;
+			for(int i=0;i<head;i++){
+				if(content[i]==m){
+					g=i;
+					head--;
+				}
+			}
+			for(int i=g;i<head;i++){
+				content[i]=content[i+1];
+			}
+		
+		
+		}
+		void display(){
+			cout<<"----------"<<endl;
+			for(int i=0;i<head;i++){
+				content[i].display();	
+			}
+			cout<<"----------"<<endl;
+		}
+		
+		
+};
+
+
+
+int main() {
+	
+	queue q;
+	member m1(3,5),m2(8,4),m3(7,1);
+
+	q+=m1;
+	q+=m2;
+	q+=m3;
+	
+	q.display();
+	
+	q.deleteQ(m3);
+	q.display();
+	
+	return 0;
+}
+
+
+

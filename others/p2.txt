@@ -1,0 +1,174 @@
+#include <iostream>
+#include <string>
+#include <cassert>
+
+using namespace std;
+
+class student{
+	protected:
+		string name;
+		int id;
+		int level;
+	public:
+		student(){
+			name="null";
+		}
+		student(int id,string name,int level){
+			this->id=id;
+			this->name=name;
+			this->level=level;
+		}
+		int getId(){
+			return id;
+		}
+		int getLevel(){
+			return level;
+		}
+		 void display(){
+			cout<<"name: "<<name<<"|ID: "<<id<<"| Level: "<<level<<endl;
+		}
+		
+		bool operator==(student &s){
+			if(id==s.id){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		void operator=(student &s){
+			this->id=s.id;
+			this->name=s.name;
+			this->level=s.level;
+		}
+		
+};
+
+class studentPhD:public student {
+	protected:
+		string specialty;
+		string supervisorName;
+	public:
+		studentPhD(){
+			specialty="null";
+			supervisorName="null";
+		}
+		studentPhD(int id,string name,int level,string specialty,string supervisorName){
+			this->id=id;
+			this->name=name;
+			this->level=level;
+			this->specialty=specialty;
+			this->supervisorName=supervisorName;
+		}
+		 void display(){
+			cout<<"name: "<<name<<"|ID: "<<id<<"| Level: "<<level<<endl;
+			cout<<"Supervisor Name: "<<supervisorName<<"|specialty: "<<specialty<<endl;
+		}
+		bool operator==(studentPhD &s){
+			if(id==s.id){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		string retSupervisorName(){
+			return supervisorName;
+		}
+		
+};
+
+class college{
+	protected:
+		int maxStud;
+		int nbStud;
+		student *stud=new student[10];
+		int maxPhdStud;
+		int nbPhdStud;
+		studentPhD *phdStud=new studentPhD[10];
+		
+	public:
+		college(){
+			maxStud=10;
+			maxPhdStud=10;
+			
+			nbStud=0;
+			nbPhdStud=0;
+			
+		}
+		college(int maxStud,int maxPhdStud){
+			if(this->maxStud>0&&this->maxPhdStud>0){
+				this->maxStud=maxStud;
+				this->maxPhdStud=maxPhdStud;
+				
+			student *stud=new student[maxStud+1];
+			studentPhD *phdStud=new studentPhD[maxPhdStud+1];
+			}else{
+				cout<<"Error!negative number!"<<endl;
+			}
+		}
+		void add(student &s){
+			if(nbStud<maxStud){
+				stud[nbStud]=s;
+				nbStud++;
+			}else{
+				cout<<"Error!full"<<endl;
+			}
+		}
+		void operator+=(studentPhD &s){
+			assert(nbPhdStud<maxPhdStud);
+				phdStud[nbPhdStud]=s;
+				nbPhdStud++;
+		}
+		void find(string supervisorName){
+			int g=-1;
+			for(int i=0;i<nbPhdStud;i++){
+				if(phdStud[i].retSupervisorName()==supervisorName){
+					g=i;
+				}
+			}
+			if(g!=-1){
+					phdStud[g].display();
+				}else{
+					cout<<"Error!not found!"<<endl;
+				}
+			
+		}
+		void display(){
+			cout<<"Students:\n-------------------------------------------------"<<endl;
+			for(int i=0;i<nbStud;i++){
+				stud[i].display();
+			}
+			cout<<"-------------------------------------------------"<<endl;
+			cout<<"PhD Students:\n-------------------------------------------------"<<endl;
+			for(int i=0;i<nbPhdStud;i++){
+				phdStud[i].display();;
+			}
+			cout<<"-------------------------------------------------"<<endl;
+		}
+		
+		
+};
+
+
+
+
+int main() {
+	student s1(111,"mohammed",4),s2(112,"osamh",5);
+	studentPhD sp1(113,"anas",2,"IT","abdullh"),sp2(114,"ghad",2,"CS","yosef");
+	college c1;	
+	
+	c1.add(s1);
+	c1.add(s2);
+	c1+=sp1;
+	c1+=sp2;
+	
+	c1.find("abdullh");
+	
+	c1.display();
+	
+
+	
+
+	return 0;
+}
+
+

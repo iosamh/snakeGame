@@ -1,0 +1,296 @@
+--------------------hospital.h
+
+#ifndef HOSPITAL_H
+#define HOSPITAL_H
+#include <string>
+using namespace std;
+
+class hospital
+{
+    protected:
+        string name;
+        int bed = 5;
+        int npatient;
+    public:
+    	hospital();
+        hospital(string name,int patient);
+        void addPatient();
+        void remPatient();
+        void displayinfo();
+        int numPatient();
+};
+
+#endif
+---------------------------------------------hospital.cpp
+#include "hospital.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+hospital::hospital(){
+	this->name="null";
+    this->npatient=0;
+}
+
+
+hospital::hospital(string name,int patient){
+    this->name=name;
+    this->npatient=npatient;
+}
+/*
+void hospital::addPatient(){
+    if(bed>=npatient){
+        npatient++;
+    }else{
+        cout<<"The hospital is full!"<<endl;
+    }
+}
+
+void hospital::remPatient(){
+    if(npatient>0){
+        npatient--;
+    }else{
+        cout<<"Error. There is no patient!"<<endl;
+    }
+}
+*/
+void hospital::displayinfo(){
+    cout<<name<<" hospital\n"<<"number of beds :"<<bed<<"\nnumber of patient :"<<npatient<<endl;
+}
+
+int hospital::numPatient(){
+	return this->npatient;
+}
+
+-------------------------------------------patient.h
+
+#ifndef PATIENT_H
+#define PATIENT_H
+#include <iostream>
+#include <string>
+#include "hospital.h"
+
+using namespace std;
+
+class patient
+{	
+	protected:
+		string name;
+		int fileNo;
+		int age;
+	public:
+		patient();
+		patient(string name, int fileNo, int age);
+		void displaypat();
+		void readpatient();
+		int retFileNo();
+		
+};
+
+#endif
+
+-------------------------------------patient.cpp
+
+#include "patient.h"
+using namespace std;
+patient::patient(){
+	this->name="null";
+	this->fileNo=111;
+	this->age=0;
+}
+
+patient::patient(string name, int fileNo, int age){
+	this->name=name;
+	this->fileNo=fileNo;
+	this->age=age;
+}
+
+void patient::displaypat(){
+	cout<<"name :"<<name<<endl;
+	cout<<"file number :"<<fileNo<<endl;
+	cout<<"age :"<<age<<endl;
+}
+
+void patient::readpatient(){
+	cout<<"Enter patient name :";
+	cin>>name;
+	cout<<"Enter patient age :";
+	cin>>age;
+	cout<<"Enter patient file number :";
+	cin>>fileNo;
+}
+
+int patient::retFileNo(){
+	return fileNo;	
+}
+
+
+
+------------------------------------------hospital2.h
+
+#ifndef HOSPITAL2_H
+#define HOSPITAL2_H
+#include "patient.h"
+#include "hospital.h"
+
+class hospital2 : public patient, public hospital
+{
+	friend ostream &operator<<(ostream &output,hospital2 &h1);
+	
+	protected:
+		patient p[5];
+		
+	public:
+		hospital2();
+		void addPatient();
+        void remPatient(int fileNo);
+		void display();
+};
+
+#endif
+
+
+---------------------------------hospital2.cpp
+#include "hospital2.h"
+
+hospital2::hospital2(){
+	hospital::npatient=0;
+	hospital::name="King Fahad Hospital";
+}
+
+void hospital2::addPatient(){
+	if(hospital::bed>hospital::npatient){
+        hospital::npatient++;
+        p[hospital::npatient-1].readpatient();
+      	cout<<"the patient of given file No("<<p[npatient-1].retFileNo()<<"has been admitted to the hospital)"<<endl;
+
+    }else{
+        cout<<"Sorry the hospital bed are full for now!"<<endl;
+    }
+}
+
+void hospital2::remPatient(int fileNo){
+    int u=0,g;
+    for(int i=0;i<bed;i++){
+        if(p[i].retFileNo()==fileNo){
+            u=1;
+            g=i;
+        }
+    }
+    if(npatient>0&&u==1){
+   		cout<<"the patient of given file No("<<p[g].retFileNo()<<" has been discharged from the hospital)"<<endl;
+		
+        for(int i=g;i<bed;i++){
+        	p[g]=p[g+1];
+		}
+		npatient--;
+    }else{
+        cout<<"Error. give file no("<<fileNo<<") is not exist in the hospital!"<<g<<endl;
+    }
+}
+/*
+void hospital2::display(){
+	
+	
+	cout<<"-----------------------"<<endl;
+	for(int i=1;i<=npatient;i++){
+		p[i-1].displaypat();
+	}
+	cout<<"-----------------------"<<endl;
+}
+*/
+
+
+
+
+------------------------------------------main.cpp
+
+
+#include <iostream>
+#include "patient.h"
+#include "hospital.h"
+#include "hospital2.h"
+
+using namespace std;
+
+ostream &operator<<(ostream &output,hospital2 &h1){
+	int i = 1;
+	output<<"-----------------------"<<endl;
+	for(;i<=h1.npatient;i++){
+		h1.p[i-1].displaypat();
+	}
+	cout<<"-----------------------"<<endl;
+	
+	return output;
+}
+
+
+
+
+int main() {
+    
+    hospital2 h1;
+    
+	int k=0,x,p;
+	
+	
+	
+	
+	cout<<"\t\tWelcome to the hospital\t\t"<<endl;
+	while(k==0){
+		
+		cout<<"1.Adding new patient"<<endl;
+		cout<<"2.Removing a patient"<<endl;
+		cout<<"3.Display all patient"<<endl;
+		cout<<"4.Exit"<<endl;
+		cin>>x;
+			switch(x){
+		case 1:{
+		    h1.addPatient();
+			break;
+		}
+		case 2:{
+		    cout<<"Enter file number :";
+		    cin>>p;
+		    h1.remPatient(p);
+			break;
+		}
+		case 3:{
+		    //h1.display();
+		    cout<<h1;
+
+			break;
+		}
+		case 4:{ 
+			k=1;
+			break;
+		}
+	}
+	}
+	
+	
+	
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

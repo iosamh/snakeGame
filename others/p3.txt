@@ -1,0 +1,196 @@
+#include <iostream>
+#include <string>
+#include <cassert>
+
+using namespace std;
+
+class student{
+	protected:
+		string name;
+		int id;
+		int level;
+		
+	public:
+		student(){
+			name="null";
+		}
+		student(string name ,int id,int level){
+			this->name=name;
+			this->id=id;
+			this->level=level;
+		}
+		string getName(){
+			return name;
+		}
+		int getId(){
+			return id;
+		}
+		void display(){
+			cout<<"name: "<<name<<"| ID: "<<id<<"| Level: "<<level<<endl;
+		}
+		
+		
+};
+
+
+class teacher{
+	protected:
+		string name;
+		string specialty;
+	public:
+		teacher(){
+			name="null";
+			specialty="null";
+		}
+		teacher(string name,string specialty){
+			this->name=name;
+			this->specialty=specialty;
+		}
+		void set(string name,string specialty){
+			this->name=name;
+			this->specialty=specialty;
+		}
+		string getName(){
+			return name;
+		}
+		string getSpeciality(){
+			return specialty;
+		}
+		void display(){
+			cout<<"Teacher name: "<<name<<"| Speciality: "<<specialty<<endl;
+		}
+		
+};
+
+class  TA:public student, public teacher{
+	protected:
+		teacher supervisor;
+	public:
+		TA(){}
+		TA(string name,string speciality){
+			supervisor.set(name,speciality);
+		}
+		void setSupervisor(teacher &t){
+			supervisor=t;
+		}
+		string getSupervisor(){
+			supervisor.display();
+			return supervisor.getName();
+		}
+		void display(){
+			cout<<"Supervisor name: "<<supervisor.getName()<<"| Speciality: "<<supervisor.getSpeciality()<<endl;
+		}
+			
+};
+
+class courseClass{
+	protected:
+		string name;
+		int maxStud;
+		int nbStud;
+		student *stud=new student[6];
+		teacher courseTeacher;
+		TA labTA;
+	public:
+		courseClass(){
+			name="null";
+			maxStud=5;
+			courseTeacher.set("abdullh","cs");
+			labTA.set("mohammed","cs");
+		}
+		courseClass(string name,int maxstud){
+			assert(maxstud>0);
+			this->name=name;
+			maxStud=maxstud;
+			courseTeacher.set("abdullh","cs");
+			labTA.set("mohammed","cs");
+			
+			delete[] stud;
+			student *stud = new student[maxStud+1];
+		}
+		
+		courseClass(string name,int maxstud,teacher &t1,TA &ta){
+			assert(maxstud>0);
+			this->name=name;
+			maxStud=maxstud;
+			courseTeacher=t1;
+			labTA=ta;
+			
+			delete[] stud;
+			student *stud = new student[maxStud+1];
+		}
+		courseClass(string name,int maxstud,string teacher,string nameTA,string specialty){
+			assert(maxstud>0);
+			this->name=name;
+			maxStud=maxstud;
+			courseTeacher.set(teacher,specialty);
+			labTA.set(nameTA,specialty);
+			
+			delete[] stud;
+			student *stud = new student[maxStud+1];
+		}
+		void operator+=(student &s){
+			assert(nbStud<maxStud);
+			stud[nbStud]=s;
+			nbStud++;
+		}
+		void find(string StudentName){
+			int g=0;
+			for(int i=0;i<nbStud;i++){
+				if(stud[i].getName()==StudentName){
+					stud[i].display();
+					g=1;
+				}
+			}
+			if(g==0){
+				cout<<"Erorr"<<StudentName<<"not found!"<<endl;
+			}
+		}
+		void display(){
+			cout<<"_________________________________"<<endl;
+			cout<<name<<" class:"<<endl;
+			cout<<"class teacher: "<<courseTeacher.getName()<<"| TA teacher: "<<labTA.getSupervisor()<<endl;
+			cout<<"---------------------------------"<<endl;
+			for(int i=0;i<nbStud;i++){
+				stud[i].display();
+			}
+			cout<<"_________________________________"<<endl;
+		}
+
+		
+		
+		
+		~courseClass(){
+			delete[] stud;
+		}
+};
+
+
+
+
+
+int main() {
+	student s1("osamh",111,4),s2("mohammed",112,8),s3("khaled",113,6);
+	teacher t1("yosef","IT");
+	TA ta;
+	
+	ta.setSupervisor(t1);
+	
+	courseClass cc("CS",10,t1,ta);
+	
+	cc+=s1;
+	cc+=s2;
+	cc+=s3;
+	
+	cc.find("mohammed");
+	cc.display();
+	
+	
+	
+	
+	
+	return 0;
+}
+
+
+
